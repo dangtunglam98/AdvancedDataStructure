@@ -57,7 +57,7 @@ class TreeMap(LinkedBinaryTree, MapBase):
             parent = self.parent(p)
             while parent != None and greatest == self.left(parent):
                 greatest = parent
-                parent = self.parent(least)
+                parent = self.parent(greatest)
             return parent
 
     def __getitem__(self, k):
@@ -98,11 +98,19 @@ class TreeMap(LinkedBinaryTree, MapBase):
         self._print_inorder(self.root())
 
 #--------------------------------------nonpublic mutators -----------------------------
+    def _subtree_last_node(self, p):
+        if p == None:
+            return None
+        last_node = p
+        while self.right(last_node) is not None:
+            last_node = self.right(last_node)
+        return last_node
+
     def _delete_node(self, p):
         if self.num_children(p) <= 1:
             self._delete(p)
         else:
-            r = self.before(p)
+            r = self._subtree_last_node(self.left(p))
             p._node._element._key = r.get_key()
             p._node._element._value = r.get_value()
             self._delete(r)
